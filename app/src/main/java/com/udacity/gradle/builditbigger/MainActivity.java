@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
 import com.example.hp.myapplication.backend.myApi.MyApi;
 import com.google.android.gms.ads.AdListener;
@@ -26,6 +27,7 @@ import udacity_project.passjoke.PassJokeActivity;
 
 
 public class MainActivity extends ActionBarActivity {
+    ProgressBar spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,9 +35,32 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         Button tellJokeBtn = (Button) findViewById(R.id.btnTellJoke);
 
+
+        spinner = (ProgressBar) findViewById(R.id.progressBar1);
+        spinner.setVisibility(View.GONE);
+
         // Initialize the InterstitialAd and set the unit Id
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId(getString(R.string.interstitial_ad));
+
+        if (BuildConfig.FLAVOR.equals("free")) {
+            // add some ads or restrict functionallity
+            LoadAdd();
+        }
+        tellJokeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mInterstitialAd.isLoaded()) {
+                    mInterstitialAd.show();
+                } else {
+                    CallTask();
+                }
+            }
+
+        });
+    }
+
+    private void LoadAdd() {
 
         //Set listener to know that we need to request new Intertitial
         mInterstitialAd.setAdListener(new AdListener() {
@@ -47,14 +72,7 @@ public class MainActivity extends ActionBarActivity {
         });
 
         requestNewInterstitial();
-        tellJokeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mInterstitialAd.isLoaded()) {
-                    mInterstitialAd.show();
-                }
-            }
-        });
+
     }
 
     public void CallTask() {
@@ -66,7 +84,7 @@ public class MainActivity extends ActionBarActivity {
         String joke = javaLibrary.getJoke();
         intent.putExtra(PassJokeActivity.JOKE_KEY, joke);
         startActivity(intent);*/
-
+        spinner.setVisibility(View.VISIBLE);
         new EndpointsAsyncTaskJoke().execute(new Pair<>(getApplicationContext(), ""));
     }
 
@@ -102,12 +120,19 @@ public class MainActivity extends ActionBarActivity {
         mInterstitialAd.loadAd(adRequest);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        spinner.setVisibility(View.INVISIBLE);
+    }
 }
+
 //The class to call our GCM backend
 class EndpointsAsyncTaskJoke extends AsyncTask<Pair<Context, String>, Void, String> {
 
     private static MyApi myApiService = null;
     private Context context;
+
 
     @Override
     protected String doInBackground(Pair<Context, String>... params) {
@@ -132,6 +157,7 @@ class EndpointsAsyncTaskJoke extends AsyncTask<Pair<Context, String>, Void, Stri
         String name = params[0].second;
         try {
             return myApiService.getJoke().execute().getData();
+
         } catch (IOException e) {
             return e.getMessage();
         }
@@ -145,5 +171,6 @@ class EndpointsAsyncTaskJoke extends AsyncTask<Pair<Context, String>, Void, Stri
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
+
 
 }

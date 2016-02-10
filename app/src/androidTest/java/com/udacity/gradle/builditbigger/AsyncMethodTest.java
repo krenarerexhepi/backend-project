@@ -28,7 +28,7 @@ public class AsyncMethodTest extends AndroidTestCase {
             @Override
             protected String doInBackground(Pair<Context, String>... params) {
                 //Do something meaningful.
-                return "something happened!";
+                return "joke is retrived";
             }
 
             @Override
