@@ -13,9 +13,6 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.example.hp.myapplication.backend.myApi.MyApi;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
@@ -40,38 +37,27 @@ public class MainActivity extends ActionBarActivity {
         spinner.setVisibility(View.GONE);
 
         // Initialize the InterstitialAd and set the unit Id
-        mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId(getString(R.string.interstitial_ad));
+       // mInterstitialAd = new InterstitialAd(this);
+       // mInterstitialAd.setAdUnitId(getString(R.string.interstitial_ad));
 
         if (BuildConfig.FLAVOR.equals("free")) {
             // add some ads or restrict functionallity
             LoadAdd();
         }
-        tellJokeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mInterstitialAd.isLoaded()) {
-                    mInterstitialAd.show();
-                } else {
-                    CallTask();
-                }
-            }
-
-        });
-    }
+        }
 
     private void LoadAdd() {
 
         //Set listener to know that we need to request new Intertitial
-        mInterstitialAd.setAdListener(new AdListener() {
-            @Override
-            public void onAdClosed() {
-                requestNewInterstitial();
-                CallTask();
-            }
-        });
+     //   mInterstitialAd.setAdListener(new AdListener() {
+     ///       @Override
+   //   /      public void onAdClosed() {
+      //          requestNewInterstitial();
+     //           CallTask();
+     //       }
+     ///   });
 
-        requestNewInterstitial();
+     //   requestNewInterstitial();
 
     }
 
@@ -110,15 +96,15 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    InterstitialAd mInterstitialAd;
+  //  InterstitialAd mInterstitialAd;
 
     // with this method we call our new ad to be dispalyed
-    private void requestNewInterstitial() {
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .build();
-        mInterstitialAd.loadAd(adRequest);
-    }
+  //  private void requestNewInterstitial() {
+  //      AdRequest adRequest = new AdRequest.Builder()
+  //              .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+  //              .build();
+  //      mInterstitialAd.loadAd(adRequest);
+  //  }
 
     @Override
     public void onResume() {

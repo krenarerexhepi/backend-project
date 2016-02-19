@@ -24,6 +24,6 @@
             </intent-filter>
         </activity>
         <!-- Include the AdActivity configChanges and theme. -->
-     </application>
+        </application>
 
 </manifest>
